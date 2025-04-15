@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
 import { Link } from "react-router";
 
 const Login = () => {
@@ -25,10 +23,11 @@ const Login = () => {
       className="min-h-screen bg-cover bg-center bg-black/50"
       style={{ backgroundImage: "url('/galaxy.jpg')" }}
     >
-      <Navbar />
       <div className="flex justify-center items-center py-20 px-4 h-[90vh]">
         <div className="w-full max-w-md bg-white/90 backdrop-blur-md rounded-2xl p-10 shadow-2xl">
-          <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">Login</h2>
+          <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
+            Login
+          </h2>
 
           <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
             <div className="flex flex-col">
@@ -79,7 +78,6 @@ const Login = () => {
           </form>
         </div>
       </div>
-      <Footer />
     </div>
   );
 };

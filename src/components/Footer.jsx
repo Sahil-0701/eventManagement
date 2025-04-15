@@ -11,7 +11,7 @@ import { Link } from "react-router";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-100 text-gray-800 py-12 mt-12">
+    <footer className="bg-gray-100 text-gray-800 py-12">
       <div className="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center">
         <div className="text-center md:text-left mb-8 md:mb-0">
           <h3 className="text-5xl ml-3 mb-3">

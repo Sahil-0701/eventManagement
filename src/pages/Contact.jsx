@@ -1,6 +1,5 @@
 import React from "react";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+
 
 const Contact = () => {
   return (
@@ -8,9 +7,9 @@ const Contact = () => {
       className="min-h-screen bg-cover bg-center bg-opacity-60 bg-blend-overlay"
       style={{ backgroundImage: "url('/galaxy.jpg')" }}
     >
-      <Navbar />
+  
 
-      <section className="flex flex-col md:flex-row items-center justify-center px-10  h-[90vh] relative">
+      <section className="flex flex-col md:flex-row items-center justify-center px-10  h-[80vh] relative">
         <div className="text-gray-800 text-center space-y-6 z-10 md:w-1/2">
           <h1 className="text-[10rem] font-bold leading-tight">We</h1>
           <h2 className="text-5xl font-semibold">are here to help!</h2>
@@ -47,11 +46,26 @@ const Contact = () => {
         </div>
       </section>
       <section className="px-10 py-10  text-gray-800 text-end">
-  <h2 className="text-2xl font-semibold text-purple-600 mb-4">Admin Contact</h2>
-  <p>Email: <a href="mailto:admin@sportseventsystem.com" className="text-blue-600 underline">admin@sportseventsystem.com</a></p>
-  <p>Phone: <a href="tel:+61412345678" className="text-blue-600 underline">+61 4 1234 5678</a></p>
-</section>
-      <Footer />
+        <h2 className="text-2xl font-semibold text-purple-600 mb-4">
+          Admin Contact
+        </h2>
+        <p>
+          Email:{" "}
+          <a
+            href="mailto:admin@sportseventsystem.com"
+            className="text-blue-600 underline"
+          >
+            admin@sportseventsystem.com
+          </a>
+        </p>
+        <p>
+          Phone:{" "}
+          <a href="tel:+61412345678" className="text-blue-600 underline">
+            +61 4 1234 5678
+          </a>
+        </p>
+      </section>
+      
     </div>
   );
 };

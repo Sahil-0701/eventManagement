@@ -8,29 +8,22 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <nav className="bg-white shadow-md">
-      <div className="container mx-auto px-6 flex justify-between items-center h-[10vh]">
-        <Link to="/" className="text-gray-800 text-3xl font-bold flex items-center">
+    <nav className="fixed top-0 left-0 w-full h-[10vh] z-50 bg-white shadow-md">
+      <div className="max-w-7xl mx-auto px-6 flex justify-between items-center h-full">
+        <Link
+          to="/"
+          className="text-gray-800 text-3xl font-bold flex items-center"
+        >
           <SiEventstore className="mr-2" />
           TrueEvent
         </Link>
 
         <div className="hidden md:flex space-x-6 items-center">
-          <Link to="/" className="text-gray-700 hover:text-blue-600">
-            Home
-          </Link>
-          <Link to="/about" className="text-gray-700 hover:text-blue-600">
-            About
-          </Link>
-          <Link to="/events" className="text-gray-700 hover:text-blue-600">
-            Events
-          </Link>
-          <Link to="/gallery" className="text-gray-700 hover:text-blue-600">
-            Gallery
-          </Link>
-          <Link to="/contact" className="text-gray-700 hover:text-blue-600">
-            Contact
-          </Link>
+          <Link to="/" className="text-gray-700 hover:text-blue-600">Home</Link>
+          <Link to="/about" className="text-gray-700 hover:text-blue-600">About</Link>
+          <Link to="/events" className="text-gray-700 hover:text-blue-600">Events</Link>
+          <Link to="/gallery" className="text-gray-700 hover:text-blue-600">Gallery</Link>
+          <Link to="/contact" className="text-gray-700 hover:text-blue-600">Contact</Link>
         </div>
 
         <div className="hidden md:flex space-x-6 items-center">
@@ -52,29 +45,15 @@ const Navbar = () => {
       </div>
 
       {isOpen && (
-        <div className="md:hidden bg-white border-t">
+        <div className="md:hidden bg-white border-t mt-[10vh]">
           <div className="flex flex-col space-y-4 p-4">
-            <Link to="/" className="text-gray-700 hover:text-blue-600">
-              Home
-            </Link>
-            <Link to="/about" className="text-gray-700 hover:text-blue-600">
-              About
-            </Link>
-            <Link to="/events" className="text-gray-700 hover:text-blue-600">
-              Events
-            </Link>
-            <Link to="/gallery" className="text-gray-700 hover:text-blue-600">
-              Gallery
-            </Link>
-            <Link to="/contact" className="text-gray-700 hover:text-blue-600">
-              Contact
-            </Link>
-            <Link to="/login" className="text-gray-700 hover:text-blue-600">
-              Login
-            </Link>
-            <Link to="/register" className="text-gray-700 hover:text-blue-600">
-              Register
-            </Link>
+            <Link to="/" className="text-gray-700 hover:text-blue-600">Home</Link>
+            <Link to="/about" className="text-gray-700 hover:text-blue-600">About</Link>
+            <Link to="/events" className="text-gray-700 hover:text-blue-600">Events</Link>
+            <Link to="/gallery" className="text-gray-700 hover:text-blue-600">Gallery</Link>
+            <Link to="/contact" className="text-gray-700 hover:text-blue-600">Contact</Link>
+            <Link to="/login" className="text-gray-700 hover:text-blue-600">Login</Link>
+            <Link to="/register" className="text-gray-700 hover:text-blue-600">Register</Link>
           </div>
         </div>
       )}

@@ -1,16 +1,16 @@
-import React from "react";
 import Navbar from "./components/Navbar";
-import "./App.css";
 import Footer from "./components/Footer";
-import Home from "./pages/Home";
+import { Outlet } from "react-router-dom";
 
 const App = () => {
   return (
-    <div>
+    <>
       <Navbar />
-      <Home />
+      <main className="mt-[10vh] min-h-screen">
+        <Outlet />
+      </main>
       <Footer />
-    </div>
+    </>
   );
 };
 

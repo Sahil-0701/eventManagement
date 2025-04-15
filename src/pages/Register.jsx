@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";  // Import useNavigate for redirection
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -10,7 +8,7 @@ const Register = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
-  const navigate = useNavigate();  // Initialize useNavigate hook for redirection
+  const navigate = useNavigate(); // Initialize useNavigate hook for redirection
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -43,8 +41,8 @@ const Register = () => {
     // Set success message and redirect after a delay
     setSuccessMessage("Registration successful! Redirecting to login...");
     setTimeout(() => {
-      navigate("/login");  // Redirect to the login page after successful registration
-    }, 2000);  // Wait 2 seconds before redirect
+      navigate("/login"); // Redirect to the login page after successful registration
+    }, 2000); // Wait 2 seconds before redirect
   };
 
   return (
@@ -52,7 +50,6 @@ const Register = () => {
       className="min-h-screen bg-cover bg-center bg-black/50"
       style={{ backgroundImage: "url('/galaxy.jpg')" }}
     >
-      <Navbar />
       <div className="flex justify-center items-center py-10 px-2">
         <div className="w-full max-w-md bg-white/90 backdrop-blur-md rounded-2xl p-10 shadow-2xl">
           <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
@@ -91,9 +88,7 @@ const Register = () => {
             </div>
 
             <div className="flex flex-col">
-              <label className="text-sm text-gray-800 mb-1">
-                Role
-              </label>
+              <label className="text-sm text-gray-800 mb-1">Role</label>
               <div className="flex gap-6">
                 <label className="flex items-center space-x-2 text-gray-700">
                   <input
@@ -138,7 +133,9 @@ const Register = () => {
             </div>
 
             {error && <p className="text-red-500 text-sm">{error}</p>}
-            {successMessage && <p className="text-green-500 text-sm">{successMessage}</p>}
+            {successMessage && (
+              <p className="text-green-500 text-sm">{successMessage}</p>
+            )}
 
             <button
               className="w-full py-3 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700 transition duration-200"
@@ -156,7 +153,6 @@ const Register = () => {
           </form>
         </div>
       </div>
-      <Footer />
     </div>
   );
 };

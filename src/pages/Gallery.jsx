@@ -1,6 +1,5 @@
 import React from "react";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+
 
 const images = [
   "/artEvent.jpg",
@@ -24,13 +23,11 @@ const images = [
 
 const Gallery = () => {
   return (
-    <div className="min-h-screen bg-cover bg-center bg-opacity-60 bg-blend-overlay"
-    style={{ backgroundImage: "url('/galaxy.jpg')" }}>
-      <Navbar />
-      <section
-        className="bg-cover bg-center bg-opacity-60 bg-blend-overlay py-16 px-4"
-        style={{ backgroundImage: "url('/galaxy.jpg')" }}
-      >
+    <div
+      className="min-h-screen bg-cover bg-center bg-opacity-60 bg-blend-overlay"
+      style={{ backgroundImage: "url('/galaxy.jpg')" }}
+    >
+      <section className="bg-cover bg-center bg-opacity-60 bg-blend-overlay py-16 px-4">
         <div className="flex">
           <div className="max-w-7xl mx-auto text-center mb-[5%] ">
             <h2 className="text-7xl font-bold text-purple-600 mb-2">Gallery</h2>
@@ -38,7 +35,6 @@ const Gallery = () => {
               Moments we’ve captured across events
             </p>
           </div>
-          
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
@@ -56,7 +52,6 @@ const Gallery = () => {
           ))}
         </div>
       </section>
-      <Footer />
     </div>
   );
 };
