@@ -19,6 +19,20 @@ import Schedule from "./pages/admin/Schedule.jsx";
 import Users from "./pages/admin/Users.jsx";
 import Registrations from "./pages/admin/Registrations.jsx";
 import Settings from "./pages/admin/Settings.jsx";
+import HostLayout from "./layouts/HostLayout.jsx";
+import HostDashboard from "./pages/host/HostDashboard.jsx";
+import CreateEvent from "./pages/host/CreateEvent.jsx";
+import MyEvents from "./pages/host/MyEvents.jsx";
+import TeamManagement from "./pages/host/TeamManagement.jsx";
+import ProfitReport from "./pages/host/ProfitReport.jsx";
+import HostSettings from "./pages/host/HostSettings.jsx";
+import UserLayout from "./layouts/UserLayout.jsx";
+import EventDetails from "./pages/user/EventDetails.jsx";
+import MyTickets from "./pages/user/MyTickets.jsx";
+import Feedback from "./pages/user/Feedback.jsx";
+import Profile from "./pages/user/Profile.jsx";
+
+import UserHome from "./pages/user/UserHome.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
@@ -42,6 +56,21 @@ createRoot(document.getElementById("root")).render(
           <Route path="users" element={<Users />} />
           <Route path="registrations" element={<Registrations />} />
           <Route path="settings" element={<Settings />} />
+        </Route>
+        <Route path="/host-dashboard" element={<HostLayout />}>
+          <Route index element={<HostDashboard />} />
+          <Route path="create-event" element={<CreateEvent />} />
+          <Route path="my-events" element={<MyEvents />} />
+          <Route path="team" element={<TeamManagement />} />
+          <Route path="profit" element={<ProfitReport />} />
+          <Route path="settings" element={<HostSettings />} />
+        </Route>
+        <Route path="/user" element={<UserLayout />}>
+          <Route index element={<UserHome />} />
+          <Route path="event/:id" element={<EventDetails />} />
+          <Route path="my-tickets" element={<MyTickets />} />
+          <Route path="feedback" element={<Feedback />} />
+          <Route path="profile" element={<Profile />} />
         </Route>
       </Routes>
     </BrowserRouter>
