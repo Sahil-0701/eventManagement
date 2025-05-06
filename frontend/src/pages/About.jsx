@@ -2,12 +2,12 @@ import React from "react";
 
 const About = () => {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#F4F1E1]"> {/* Soothing light beige background */}
       {/* Hero Section */}
-      <section className="flex flex-col md:flex-row items-center justify-between px-10 py-36 bg-cover bg-center bg-no-repeat text-white relative min-h-[60vh]">
+      <section className="flex flex-col md:flex-row items-center justify-between px-10 py-36 bg-[#A0522D] text-white relative min-h-[60vh]">
         <div className="absolute inset-0 bg-black bg-opacity-50 z-0" />
         <div className="md:w-1/2 space-y-6 z-10">
-          <h1 className="text-5xl font-bold text-purple-400">About Us</h1>
+          <h1 className="text-5xl font-bold text-[#3F7D58]">About Us</h1>
           <p className="text-lg leading-relaxed text-gray-100">
             TrueEvent is your trusted hub for organizing and discovering
             sporting events. We aim to make event planning seamless and
@@ -25,11 +25,9 @@ const About = () => {
       </section>
 
       {/* Mission Section */}
-      <section className="flex flex-col md:flex-row-reverse items-center justify-between px-10 py-20 bg-white text-gray-800">
+      <section className="flex flex-col md:flex-row-reverse items-center justify-between px-10 py-20 bg-white text-[#3F7D58]">
         <div className="md:w-1/2 space-y-6">
-          <h2 className="text-4xl text-purple-600 font-semibold">
-            Our Mission
-          </h2>
+          <h2 className="text-4xl font-semibold">Our Mission</h2>
           <p className="text-lg leading-relaxed">
             At TrueEvent, we believe sports have the power to unite people and
             build lasting communities. Our platform helps event organizers
@@ -38,7 +36,7 @@ const About = () => {
           </p>
 
           <h3 className="text-2xl font-semibold mt-6">What We Offer</h3>
-          <ul className="list-disc space-y-2 pl-6 text-gray-700">
+          <ul className="list-disc space-y-2 pl-6 text-[#3F7D58]">
             <li>Event discovery and easy registration</li>
             <li>Tools for event organizers to manage participants</li>
             <li>Real-time updates and schedules</li>
@@ -56,9 +54,9 @@ const About = () => {
       </section>
 
       {/* Vision Section */}
-      <section className="flex flex-col md:flex-row items-center justify-between px-10 py-20 bg-black text-white">
+      <section className="flex flex-col md:flex-row items-center justify-between px-10 py-20 bg-[#5C4033] text-white">
         <div className="md:w-1/2 space-y-6">
-          <h2 className="text-4xl text-purple-600 font-semibold">Our Vision</h2>
+          <h2 className="text-4xl font-semibold">Our Vision</h2>
           <p className="text-lg leading-relaxed">
             Our vision is to empower communities by making sports events more
             accessible and efficient to organize. We envision a world where

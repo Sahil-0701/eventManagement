@@ -1,18 +1,12 @@
-module.exports = {
+/** @type {import('tailwindcss').Config} */
+export default {
   content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {
-      fontFamily: {
-        inter: ['Inter', 'sans-serif'],
-        pacifico: ['Pacifico', 'cursive'],
-        poppins: ['Poppins', 'sans-serif'],
-      },
-    },
+    extend: {},
   },
-    plugins: [
-      require('tailwind-scrollbar-hide'),
-    ],
-  }
+  plugins: [],
+}
   

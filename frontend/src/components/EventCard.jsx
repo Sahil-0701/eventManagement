@@ -1,6 +1,19 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
-const EventCard = ({ image, title, date, time, location, description }) => {
+const EventCard = ({ id, image, title, date, time, location, description }) => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const handleBookTicket = () => {
+    if (!user) {
+      navigate('/login', { state: { from: `/events/${id}` } });
+      return;
+    }
+    navigate(`/events/${id}`);
+  };
+
   return (
     <div className="flex flex-col rounded-lg overflow-hidden shadow-lg bg-white h-[400px]">
       <img
@@ -23,8 +36,11 @@ const EventCard = ({ image, title, date, time, location, description }) => {
             {description}
           </p>
         </div>
-        <button className="w-full mt-4 px-4 py-2 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition duration-300">
-          Get a Ticket
+        <button 
+          onClick={handleBookTicket}
+          className="w-full mt-4 px-4 py-2 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition duration-300"
+        >
+          {user ? 'Book Ticket' : 'Login to Book'}
         </button>
       </div>
     </div>

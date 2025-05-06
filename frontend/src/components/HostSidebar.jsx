@@ -1,5 +1,14 @@
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, PlusCircle, CalendarDays, Users, BarChart, Settings } from "lucide-react";
+import { 
+  LayoutDashboard, 
+  PlusCircle, 
+  CalendarDays, 
+  Users, 
+  BarChart, 
+  Settings,
+  ClipboardList,
+  UserCog
+} from "lucide-react";
 
 const HostSidebar = () => {
   return (
@@ -7,43 +16,73 @@ const HostSidebar = () => {
       <h2 className="text-2xl font-bold mb-6 text-center">Host Panel</h2>
       <nav className="space-y-4">
         <NavLink
-          to="/host-dashboard"
-          className="flex items-center space-x-3 hover:bg-purple-500 p-3 rounded-lg transition"
+          to="/host/dashboard"
+          className={({ isActive }) =>
+            `flex items-center space-x-3 p-3 rounded-lg transition ${
+              isActive ? 'bg-purple-700' : 'hover:bg-purple-500'
+            }`
+          }
+          end
         >
           <LayoutDashboard size={20} />
           <span>Dashboard</span>
         </NavLink>
+
         <NavLink
-          to="/host-dashboard/create-event"
-          className="flex items-center space-x-3 hover:bg-purple-500 p-3 rounded-lg transition"
+          to="/host/create-event"
+          className={({ isActive }) =>
+            `flex items-center space-x-3 p-3 rounded-lg transition ${
+              isActive ? 'bg-purple-700' : 'hover:bg-purple-500'
+            }`
+          }
         >
           <PlusCircle size={20} />
           <span>Create Event</span>
         </NavLink>
+
         <NavLink
-          to="/host-dashboard/my-events"
-          className="flex items-center space-x-3 hover:bg-purple-500 p-3 rounded-lg transition"
+          to="/host/my-events"
+          className={({ isActive }) =>
+            `flex items-center space-x-3 p-3 rounded-lg transition ${
+              isActive ? 'bg-purple-700' : 'hover:bg-purple-500'
+            }`
+          }
         >
           <CalendarDays size={20} />
           <span>My Events</span>
         </NavLink>
+
         <NavLink
-          to="/host-dashboard/team"
-          className="flex items-center space-x-3 hover:bg-purple-500 p-3 rounded-lg transition"
+          to="/host/team-management"
+          className={({ isActive }) =>
+            `flex items-center space-x-3 p-3 rounded-lg transition ${
+              isActive ? 'bg-purple-700' : 'hover:bg-purple-500'
+            }`
+          }
         >
           <Users size={20} />
           <span>Team Management</span>
         </NavLink>
+
         <NavLink
-          to="/host-dashboard/profit"
-          className="flex items-center space-x-3 hover:bg-purple-500 p-3 rounded-lg transition"
+          to="/host/profit-report"
+          className={({ isActive }) =>
+            `flex items-center space-x-3 p-3 rounded-lg transition ${
+              isActive ? 'bg-purple-700' : 'hover:bg-purple-500'
+            }`
+          }
         >
           <BarChart size={20} />
           <span>Profit Report</span>
         </NavLink>
+
         <NavLink
-          to="/host-dashboard/settings"
-          className="flex items-center space-x-3 hover:bg-purple-500 p-3 rounded-lg transition"
+          to="/host/settings"
+          className={({ isActive }) =>
+            `flex items-center space-x-3 p-3 rounded-lg transition ${
+              isActive ? 'bg-purple-700' : 'hover:bg-purple-500'
+            }`
+          }
         >
           <Settings size={20} />
           <span>Settings</span>

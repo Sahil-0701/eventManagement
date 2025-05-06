@@ -1,131 +1,259 @@
-import React from "react";
-import {
-  UserCircle,
-  CalendarCheck,
-  Ticket,
-  DollarSign,
-  Clock,
-  CheckCircle,
-  XCircle,
-} from "lucide-react";
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import api from '../../utils/axios';
+import { 
+    Users, 
+    Calendar, 
+    Ticket, 
+    DollarSign, 
+    BarChart2,
+    PlusCircle,
+    Clock
+} from 'lucide-react';
 
-const stats = [
-  {
-    title: "Total Users",
-    value: 1240,
-    icon: <UserCircle className="w-6 h-6 text-blue-500" />,
-    color: "bg-blue-100 text-blue-700",
-  },
-  {
-    title: "Tickets Sold",
-    value: 980,
-    icon: <Ticket className="w-6 h-6 text-green-500" />,
-    color: "bg-green-100 text-green-700",
-  },
-  {
-    title: "Revenue",
-    value: "₹72,500",
-    icon: <DollarSign className="w-6 h-6 text-yellow-500" />,
-    color: "bg-yellow-100 text-yellow-700",
-  },
-  {
-    title: "Upcoming Events",
-    value: 5,
-    icon: <CalendarCheck className="w-6 h-6 text-purple-500" />,
-    color: "bg-purple-100 text-purple-700",
-  },
-];
+const AdminDashboard = () => {
+    const { user } = useAuth();
+    const navigate = useNavigate();
+    const [stats, setStats] = useState({
+        totalEvents: 0,
+        pendingEvents: 0,
+        totalRevenue: 0,
+        totalUsers: 0,
+        totalHosts: 0,
+        recentEvents: []
+    });
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-const pendingApprovals = [
-    { id: 1, name: "Tech Expo 2025", organizer: "John Doe", date: "12 Apr 2025" },
-    { id: 2, name: "Startup Summit", organizer: "Riya Kapoor", date: "18 Apr 2025" },
-    { id: 3, name: "AI & Robotics Meet", organizer: "Mehul Jain", date: "20 Apr 2025" },
-    { id: 4, name: "GreenTech Conference", organizer: "Neha Verma", date: "22 Apr 2025" },
-    { id: 5, name: "CyberSec Forum", organizer: "Arjun Mehta", date: "25 Apr 2025" },
-    { id: 6, name: "Design Thinking Bootcamp", organizer: "Priya Nair", date: "27 Apr 2025" },
-    { id: 7, name: "HackVerse 2025", organizer: "Vikram Shah", date: "30 Apr 2025" },
-    { id: 8, name: "Entrepreneurs Unleashed", organizer: "Sanya Mathur", date: "2 May 2025" },
-    { id: 9, name: "Digital Art Showcase", organizer: "Kunal Kapoor", date: "5 May 2025" },
-    { id: 10, name: "VR World Fair", organizer: "Ritika Singh", date: "7 May 2025" },
-    
-  ];
-  
-const Dashboard = () => {
-  const handleApproval = (id, status) => {
-    console.log(`Event ID ${id} was ${status}`); // Replace with actual API logic
-    // Optional: remove from list after decision
-  };
+    useEffect(() => {
+        if (!user || user.role !== 'admin') {
+            navigate('/login');
+            return;
+        }
 
-  return (
-    <div className="max-w-7xl mx-auto p-6 space-y-10">
-      <div>
-        <h1 className="text-3xl font-bold text-purple-600 mb-2">Admin Dashboard</h1>
-        <p className="text-gray-700">
-          Welcome to your control panel. Here's a quick overview of the system.
-        </p>
-      </div>
+        const fetchDashboardData = async () => {
+            try {
+                setLoading(true);
+                setError(null);
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {stats.map((stat, index) => (
-          <div
-            key={index}
-            className={`rounded-xl p-5 shadow-sm flex items-center justify-between ${stat.color}`}
-          >
-            <div>
-              <p className="text-sm font-medium">{stat.title}</p>
-              <p className="text-xl font-bold mt-1">{stat.value}</p>
+                const response = await api.get('/analytics/admin');
+                if (response.data.success) {
+                    setStats(response.data.data);
+                } else {
+                    throw new Error(response.data.message);
+                }
+
+                setLoading(false);
+            } catch (error) {
+                console.error('Error fetching admin dashboard data:', error);
+                setError(error.response?.data?.message || 'Failed to load dashboard data');
+                setLoading(false);
+            }
+        };
+
+        fetchDashboardData();
+    }, [user, navigate]);
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
             </div>
-            {stat.icon}
-          </div>
-          
-        ))}
-      </div>
+        );
+    }
 
-      {/* Approval Requests */}
-      <div className="bg-white p-5 rounded-xl shadow-md border">
-      
-        <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">
-          <Clock className="w-5 h-5 text-yellow-600" /> Pending Event Approvals
-        </h2>
+    if (error) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <h2 className="text-2xl font-bold text-red-600 mb-4">Error Loading Dashboard</h2>
+                    <p className="text-gray-600 mb-4">{error}</p>
+                    <button
+                        onClick={() => window.location.reload()}
+                        className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+                    >
+                        Retry
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
-        {pendingApprovals.length === 0 ? (
-          <p className="text-gray-500">No pending events at the moment.</p>
-        ) : (
-          <ul className="divide-y divide-gray-200">
-            {pendingApprovals.map((event) => (
-              <li
-                key={event.id}
-                className="py-3 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3"
-              >
-                <div>
-                  <p className="font-medium text-gray-700">{event.name}</p>
-                  <p className="text-sm text-gray-500">
-                    By {event.organizer} • {event.date}
-                  </p>
+    return (
+        <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-7xl mx-auto">
+                <div className="text-center mb-12">
+                    <h1 className="text-3xl font-bold text-gray-900">
+                        Admin Dashboard
+                    </h1>
+                    <p className="mt-2 text-lg text-gray-600">
+                        Welcome back, {user.name}! Here's an overview of your platform.
+                    </p>
                 </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleApproval(event.id, "accepted")}
-                    className="flex items-center gap-1 px-3 py-1 text-sm bg-green-100 text-green-700 rounded-md hover:bg-green-200 transition"
-                  >
-                    <CheckCircle className="w-4 h-4" /> Accept
-                  </button>
-                  <button
-                    onClick={() => handleApproval(event.id, "rejected")}
-                    className="flex items-center gap-1 px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition"
-                  >
-                    <XCircle className="w-4 h-4" /> Reject
-                  </button>
+
+                {/* Stats Overview */}
+                <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+                    <div className="bg-white overflow-hidden shadow rounded-lg">
+                        <div className="p-5">
+                            <div className="flex items-center">
+                                <div className="flex-shrink-0">
+                                    <Users className="h-6 w-6 text-purple-600" />
+                                </div>
+                                <div className="ml-5 w-0 flex-1">
+                                    <dl>
+                                        <dt className="text-sm font-medium text-gray-500 truncate">
+                                            Total Users
+                                        </dt>
+                                        <dd className="text-lg font-medium text-gray-900">
+                                            {stats.totalUsers}
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="bg-white overflow-hidden shadow rounded-lg">
+                        <div className="p-5">
+                            <div className="flex items-center">
+                                <div className="flex-shrink-0">
+                                    <Calendar className="h-6 w-6 text-blue-600" />
+                                </div>
+                                <div className="ml-5 w-0 flex-1">
+                                    <dl>
+                                        <dt className="text-sm font-medium text-gray-500 truncate">
+                                            Total Events
+                                        </dt>
+                                        <dd className="text-lg font-medium text-gray-900">
+                                            {stats.totalEvents}
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="bg-white overflow-hidden shadow rounded-lg">
+                        <div className="p-5">
+                            <div className="flex items-center">
+                                <div className="flex-shrink-0">
+                                    <Clock className="h-6 w-6 text-yellow-600" />
+                                </div>
+                                <div className="ml-5 w-0 flex-1">
+                                    <dl>
+                                        <dt className="text-sm font-medium text-gray-500 truncate">
+                                            Pending Events
+                                        </dt>
+                                        <dd className="text-lg font-medium text-gray-900">
+                                            {stats.pendingEvents}
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="bg-white overflow-hidden shadow rounded-lg">
+                        <div className="p-5">
+                            <div className="flex items-center">
+                                <div className="flex-shrink-0">
+                                    <DollarSign className="h-6 w-6 text-green-600" />
+                                </div>
+                                <div className="ml-5 w-0 flex-1">
+                                    <dl>
+                                        <dt className="text-sm font-medium text-gray-500 truncate">
+                                            Total Revenue
+                                        </dt>
+                                        <dd className="text-lg font-medium text-gray-900">
+                                            ₹{stats.totalRevenue}
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </li>
-            ))}
-          </ul>
-          
-        )}
-      </div>
-    </div>
-  );
+
+                {/* Recent Events */}
+                <div className="bg-white shadow rounded-lg p-6 mb-8">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4">Recent Events</h2>
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full divide-y divide-gray-200">
+                            <thead className="bg-gray-50">
+                                <tr>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Event</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Host</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody className="bg-white divide-y divide-gray-200">
+                                {stats.recentEvents.map((event) => (
+                                    <tr key={event._id}>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="text-sm font-medium text-gray-900">{event.title}</div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <div className="text-sm text-gray-900">{event.host.name}</div>
+                                            <div className="text-sm text-gray-500">{event.host.email}</div>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
+                                            <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                                                event.status === 'approved' ? 'bg-green-100 text-green-800' :
+                                                event.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+                                                'bg-red-100 text-red-800'
+                                            }`}>
+                                                {event.status}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                            {new Date(event.createdAt).toLocaleDateString()}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                {/* Quick Actions */}
+                <div className="bg-white shadow rounded-lg p-6">
+                    <h2 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <button
+                            onClick={() => navigate('/admin/events/create')}
+                            className="flex items-center justify-center p-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-purple-600 hover:bg-purple-700"
+                        >
+                            <PlusCircle className="h-5 w-5 mr-2" />
+                            Create Event
+                        </button>
+                        <button
+                            onClick={() => navigate('/admin/users')}
+                            className="flex items-center justify-center p-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
+                        >
+                            <Users className="h-5 w-5 mr-2" />
+                            Manage Users
+                        </button>
+                        <button
+                            onClick={() => navigate('/admin/events')}
+                            className="flex items-center justify-center p-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700"
+                        >
+                            <Calendar className="h-5 w-5 mr-2" />
+                            Manage Events
+                        </button>
+                        <button
+                            onClick={() => navigate('/admin/reports')}
+                            className="flex items-center justify-center p-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-yellow-600 hover:bg-yellow-700"
+                        >
+                            <BarChart2 className="h-5 w-5 mr-2" />
+                            View Reports
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
 };
 
-export default Dashboard;
+export default AdminDashboard;

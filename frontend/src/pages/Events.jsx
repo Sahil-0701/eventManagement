@@ -1,64 +1,99 @@
-import React from "react";
-import { FaSearch } from "react-icons/fa";
-import EventList from "../components/EventList";
-import { eventsList } from "../data/eventListData";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { getEvents } from "../services/apiService";
 
 const Events = () => {
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await getEvents();
+        if (response.success) {
+          setEvents(response.data);
+        } else {
+          setError(response.message || "Failed to fetch events");
+        }
+      } catch (err) {
+        setError("An error occurred while fetching events");
+        console.error("Error fetching events:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return <div className="text-center text-red-500 p-4">{error}</div>;
+  }
+
   return (
-    <div className="min-h-screen bg-cover bg-center">
-      <section className="bg-black bg-opacity-70 bg-blend-overlay py-20 px-6">
-        {/* Header */}
-        <div className="max-w-7xl mx-auto text-center mb-16">
-          <h2 className="text-5xl md:text-7xl font-extrabold text-purple-500 drop-shadow-lg mb-4">
-            Events
-          </h2>
-          <p className="text-gray-300 text-lg md:text-xl max-w-2xl mx-auto">
-            Seamless Sports Events, From Planning to Play
-          </p>
-        </div>
+    <div className="max-w-7xl mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-6">All Events</h1>
 
-        {/* Search and Filter */}
-        <form className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 mb-12 bg-white px-6 py-4 rounded-3xl shadow-lg">
-          {/* Search Input */}
-          <div className="relative w-full md:w-[40%] min-w-[250px]">
-            <input
-              className="w-full border-2 border-gray-200 text-lg px-5 py-2 pr-12 rounded-full shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-400"
-              type="text"
-              id="filter"
-              name="filter"
-              placeholder="Search for an event..."
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {events.map((event) => (
+          <div
+            key={event._id}
+            className="flex flex-col rounded-lg overflow-hidden shadow-lg bg-white h-[400px]"
+          >
+            <img
+              src={"/artEvent.jpg"}
+              alt={event.title}
+              className="w-full h-40 sm:h-48 object-cover"
             />
-            <button
-              type="submit"
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 text-purple-600 hover:text-purple-800"
-              aria-label="Search"
-            >
-              <FaSearch className="w-5 h-5" />
-            </button>
-          </div>
 
-          {/* Dropdown Filter */}
-          <div className="w-full md:w-1/4">
-            <select className="w-full px-4 py-3 rounded-xl border border-gray-300 shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-400">
-              <option value="">All Tags</option>
-              <option value="upcoming">Upcoming</option>
-              <option value="special">Special</option>
-              <option value="early-access">Early Access</option>
-            </select>
-          </div>
-        </form>
-
-        {/* Event List */}
-        <div className="w-full bg-white bg-opacity-95 p-8 rounded-3xl shadow-2xl">
-          <div className="flex flex-col gap-4">
-            {eventsList.map((eventData, index) => (
-              <div key={index} className="w-full">
-                <EventList {...eventData} />
+            <div className="p-6 flex flex-col justify-between flex-grow">
+              <div>
+                <div className="flex justify-between items-center text-gray-500 text-sm mb-2">
+                  <span>{event.date}</span>
+                  <span>{event.time}</span>
+                  <span>{event.location}</span>
+                </div>
+                <h3 className="text-xl font-semibold text-purple-700 mb-2 truncate">
+                  {event.title}
+                </h3>
+                <p className="text-gray-600 text-sm line-clamp-3 overflow-hidden">
+                  {event.description}
+                </p>
               </div>
-            ))}
+              <button
+                onClick={() =>
+                  !user
+                    ? navigate("/login", {
+                        state: { from: `/events/${event._id}` },
+                      })
+                    : navigate(`/events/${event._id}`)
+                }
+                className="w-full mt-4 px-4 py-2 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition duration-300"
+              >
+                {user ? "Book Ticket" : "Login to Book"}
+              </button>
+            </div>
           </div>
+        ))}
+      </div>
+
+      {events.length === 0 && (
+        <div className="text-center py-12">
+          <p className="text-gray-500">No events available at the moment.</p>
         </div>
-      </section>
+      )}
     </div>
   );
 };

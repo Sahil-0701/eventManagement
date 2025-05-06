@@ -1,160 +1,183 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate for redirection
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { register } from '../services/apiService'; // Assuming you have this API function
+import { useAuth } from '../context/AuthContext';
 
 const Register = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [role, setRole] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
-  const navigate = useNavigate(); // Initialize useNavigate hook for redirection
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        password: '',
+        role: 'user' // Default to 'user'
+    });
+    const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+    const { setUser } = useAuth();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+    };
 
-    // Basic validation
-    if (!name || !email || !password || !role) {
-      setError("Please fill out all fields.");
-      return;
-    }
+    const validatePassword = (password) => {
+        // Simple password validation check: at least 8 characters, 1 uppercase, 1 number
+        const regex = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/;
+        return regex.test(password);
+    };
 
-    // Email format validation
-    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-    if (!emailPattern.test(email)) {
-      setError("Please enter a valid email address.");
-      return;
-    }
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
+        setLoading(true);
 
-    // Password strength check (example: at least 6 characters)
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters long.");
-      return;
-    }
+        if (!validatePassword(formData.password)) {
+            setError('Password must be at least 8 characters long and contain 1 uppercase letter and 1 number.');
+            setLoading(false);
+            return;
+        }
 
-    // Clear previous error messages
-    setError("");
+        try {
+            const response = await register(formData);
+            console.log('Registration response:', response);  // Add logging for debugging
+            
+            if (response.success) {
+                localStorage.setItem('token', response.token);
+                setUser(response.data);
+                
+                // Redirect based on role
+                switch (response.data.role) {
+                    case 'admin':
+                        navigate('/admin/dashboard');
+                        break;
+                    case 'host':
+                        navigate('/host/dashboard');
+                        break;
+                    default:
+                        navigate('/user/dashboard');
+                }
+            } else {
+                setError(response.message || 'Registration failed');
+            }
+        } catch (err) {
+            setError('An error occurred during registration');
+            console.error('Registration error:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
-    // Simulate successful registration (this could be a backend call in real apps)
-    console.log("Registered with:", { name, email, password, role });
+    return (
+        <div className="min-h-screen bg-cover bg-center bg-[#EFEFEF] py-10 px-4 sm:px-6 lg:px-8" style={{ backgroundImage: "url('/galaxy.jpg')" }}>
+            <div className="flex justify-center items-center w-full min-h-screen">
+                <div className="w-full max-w-md bg-white/90 backdrop-blur-md rounded-2xl p-10 shadow-2xl space-y-8">
+                    <div>
+                        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                            Create your account
+                        </h2>
+                    </div>
+                    <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+                        {error && (
+                            <div className="bg-[#EC5228] text-white px-4 py-3 rounded relative" role="alert">
+                                <span className="block sm:inline">{error}</span>
+                            </div>
+                        )}
+                        <div className="rounded-md shadow-sm -space-y-px">
+                            <div>
+                                <label htmlFor="name" className="sr-only">Full Name</label>
+                                <input
+                                    id="name"
+                                    name="name"
+                                    type="text"
+                                    required
+                                    className="h-12 px-4 rounded-lg bg-gray-200 focus:outline-none focus:ring-2 focus:ring-[#3F7D58] w-full"
+                                    placeholder="Full Name"
+                                    value={formData.name}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <div>
+                                <label htmlFor="email" className="sr-only">Email address</label>
+                                <input
+                                    id="email"
+                                    name="email"
+                                    type="email"
+                                    required
+                                    className="h-12 px-4 rounded-lg bg-gray-200 focus:outline-none my-4 focus:ring-2 focus:ring-[#3F7D58] w-full"
+                                    placeholder="Email address"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                            <div className="mb-4">
+                                <label htmlFor="role" className="sr-only">Role</label>
+                                <div className="flex space-x-4 my-4">
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            name="role"
+                                            value="user"
+                                            checked={formData.role === 'user'}
+                                            onChange={handleChange}
+                                            className="mr-2"
+                                        />
+                                        User
+                                    </label>
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            name="role"
+                                            value="host"
+                                            checked={formData.role === 'host'}
+                                            onChange={handleChange}
+                                            className="mr-2"
+                                        />
+                                        Host
+                                    </label>
+                                    <label>
+                                        <input
+                                            type="radio"
+                                            name="role"
+                                            value="admin"
+                                            checked={formData.role === 'admin'}
+                                            onChange={handleChange}
+                                            className="mr-2"
+                                        />
+                                        Admin
+                                    </label>
+                                </div>
+                            </div>
+                            <div>
+                                <label htmlFor="password" className="sr-only">Password</label>
+                                <input
+                                    id="password"
+                                    name="password"
+                                    type="password"
+                                    required
+                                    className="h-12 px-4 my-4 rounded-lg bg-gray-200 focus:outline-none focus:ring-2 focus:ring-[#3F7D58] w-full"
+                                    placeholder="Password"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                        </div>
 
-    // Set success message and redirect after a delay
-    setSuccessMessage("Registration successful! Redirecting to login...");
-    setTimeout(() => {
-      navigate("/login"); // Redirect to the login page after successful registration
-    }, 2000); // Wait 2 seconds before redirect
-  };
-
-  return (
-    <div
-      className="min-h-screen bg-cover bg-center bg-black/50"
-      style={{ backgroundImage: "url('/galaxy.jpg')" }}
-    >
-      <div className="flex justify-center items-center py-10 px-2">
-        <div className="w-full max-w-md bg-white/90 backdrop-blur-md rounded-2xl p-10 shadow-2xl">
-          <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">
-            Register
-          </h2>
-
-          <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
-            <div className="flex flex-col">
-              <label htmlFor="name" className="text-sm text-gray-800 mb-1">
-                Full Name
-              </label>
-              <input
-                className="h-12 px-4 rounded-lg bg-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                type="text"
-                id="name"
-                placeholder="Enter your full name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-              />
+                        <div>
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="w-full py-3 bg-[#3F7D58] text-white font-medium rounded-lg hover:bg-[#EF9651] transition duration-200"
+                            >
+                                {loading ? 'Creating account...' : 'Create account'}
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
-
-            <div className="flex flex-col">
-              <label htmlFor="email" className="text-sm text-gray-800 mb-1">
-                Email Address
-              </label>
-              <input
-                className="h-12 px-4 rounded-lg bg-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                type="email"
-                id="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-
-            <div className="flex flex-col">
-              <label className="text-sm text-gray-800 mb-1">Role</label>
-              <div className="flex gap-6">
-                <label className="flex items-center space-x-2 text-gray-700">
-                  <input
-                    type="radio"
-                    name="role"
-                    value="user"
-                    checked={role === "user"}
-                    onChange={(e) => setRole(e.target.value)}
-                    className="accent-purple-600"
-                    required
-                  />
-                  <span>User</span>
-                </label>
-
-                <label className="flex items-center space-x-2 text-gray-700">
-                  <input
-                    type="radio"
-                    name="role"
-                    value="admin"
-                    checked={role === "admin"}
-                    onChange={(e) => setRole(e.target.value)}
-                    className="accent-purple-600"
-                  />
-                  <span>Admin</span>
-                </label>
-              </div>
-            </div>
-
-            <div className="flex flex-col">
-              <label htmlFor="password" className="text-sm text-gray-800 mb-1">
-                Password
-              </label>
-              <input
-                className="h-12 px-4 rounded-lg bg-zinc-100 focus:outline-none focus:ring-2 focus:ring-blue-400"
-                type="password"
-                id="password"
-                placeholder="Create a password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-
-            {error && <p className="text-red-500 text-sm">{error}</p>}
-            {successMessage && (
-              <p className="text-green-500 text-sm">{successMessage}</p>
-            )}
-
-            <button
-              className="w-full py-3 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700 transition duration-200"
-              type="submit"
-            >
-              Register
-            </button>
-
-            <p className="text-sm text-center text-gray-600 mt-2">
-              Already have an account?{" "}
-              <a href="/login" className="text-purple-600 hover:underline">
-                Login
-              </a>
-            </p>
-          </form>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
 export default Register;

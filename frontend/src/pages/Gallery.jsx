@@ -1,57 +1,117 @@
-import React from "react";
-
-
-const images = [
-  "/artEvent.jpg",
-  "/foodFes.jpg",
-  "/techTalk.jpg",
-  "/concert.jpg",
-  "/bookFair.jpg",
-  "/charityGala.jpg",
-  "/cricket.jpg",
-  "/environment.jpg",
-  "/fashionShow.jpg",
-  "/event.jpg",
-  "/filmFest.jpg",
-  "/fitnessRun.jpg",
-  "/gallery.jpg",
-  "/gaming.jpg",
-  "/heritageDay.jpg",
-  "/musicJam.jpg",
-  "/robotWars.jpg",
-];
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import api from '../utils/axios';
 
 const Gallery = () => {
-  return (
-    <div
-      className="min-h-screen bg-cover bg-center bg-opacity-60 bg-blend-overlay"
-      style={{ backgroundImage: "url('/galaxy.jpg')" }}
-    >
-      <section className="bg-cover bg-center bg-opacity-60 bg-blend-overlay py-16 px-4">
-        <div className="flex">
-          <div className="max-w-7xl mx-auto text-center mb-[5%] ">
-            <h2 className="text-7xl font-bold text-purple-600 mb-2">Gallery</h2>
-            <p className="text-gray-500 text-lg">
-              Moments we’ve captured across events
-            </p>
-          </div>
-        </div>
+  const [events, setEvents] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-          {images.map((src, idx) => (
-            <div
-              key={idx}
-              className="overflow-hidden rounded-xl shadow-md group hover:scale-105 transform transition duration-300"
-            >
-              <img
-                src={src}
-                alt={`Event ${idx + 1}`}
-                className="w-full h-64 object-cover group-hover:brightness-75 transition duration-300"
-              />
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await api.get('/events');
+        setEvents(response.data.data || []);
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching events:', err);
+        setError(err.response?.data?.message || 'Failed to fetch events');
+        setLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+
+  const filteredEvents = events.filter(event =>
+    event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    event.description.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  if (loading) return <div className="text-center py-8">Loading galleries...</div>;
+  if (error) return <div className="text-red-500 text-center py-8">{error}</div>;
+
+  return (
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-4xl font-bold mb-8">Event Galleries</h1>
+
+      {/* Search Bar */}
+      <div className="mb-8">
+        <input
+          type="text"
+          placeholder="Search events..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full max-w-md px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
+      {/* Events Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {filteredEvents.map((event) => (
+          <Link
+            key={event._id}
+            to={`/events/${event._id}/gallery`}
+            className="group"
+          >
+            <div className="bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 group-hover:scale-105">
+              <div className="relative h-48">
+                <img
+                  src={event.image}
+                  alt={event.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-60 transition-opacity duration-300" />
+              </div>
+              <div className="p-6">
+                <h2 className="text-xl font-semibold mb-2">{event.title}</h2>
+                <p className="text-gray-600 mb-4 line-clamp-2">{event.description}</p>
+                <div className="flex items-center justify-between text-sm text-gray-500">
+                  <span>{new Date(event.date).toLocaleDateString()}</span>
+                  <span>{event.location}</span>
+                </div>
+              </div>
             </div>
-          ))}
+          </Link>
+        ))}
+      </div>
+
+      {filteredEvents.length === 0 && (
+        <div className="text-center py-12">
+          <p className="text-gray-500 text-lg">No events found matching your search.</p>
         </div>
-      </section>
+      )}
+    </div>
+  );
+};
+
+export default Gallery;
+
+                  src={event.image}
+                  alt={event.title}
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-black bg-opacity-40 group-hover:bg-opacity-60 transition-opacity duration-300" />
+              </div>
+              <div className="p-6">
+                <h2 className="text-xl font-semibold mb-2">{event.title}</h2>
+                <p className="text-gray-600 mb-4 line-clamp-2">{event.description}</p>
+                <div className="flex items-center justify-between text-sm text-gray-500">
+                  <span>{new Date(event.date).toLocaleDateString()}</span>
+                  <span>{event.location}</span>
+                </div>
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      {filteredEvents.length === 0 && (
+        <div className="text-center py-12">
+          <p className="text-gray-500 text-lg">No events found matching your search.</p>
+        </div>
+      )}
     </div>
   );
 };

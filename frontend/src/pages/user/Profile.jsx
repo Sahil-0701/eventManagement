@@ -8,7 +8,7 @@ const Profile = () => {
   };
 
   return (
-    <div className="p-6 max-w-xl mx-auto">
+    <div className="max-w-7xl mx-auto p-6">
       <h1 className="text-3xl font-bold text-purple-700 mb-6">My Profile</h1>
       <div className="bg-white p-6 rounded-lg shadow space-y-4">
         <p><strong>Name:</strong> {user.name}</p>

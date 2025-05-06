@@ -3,15 +3,15 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import UserSidebar from "../components/UserSidebar";
 
-
 const UserLayout = () => {
   return (
     <>
       <Navbar />
-      <div className="flex pt-[10vh] min-h-screen bg-gray-100">
-        {/* Uncomment below if you plan to include a sidebar */}
-        <UserSidebar />
-        <main className="flex-1 p-4">
+      <div className="flex min-h-[calc(100vh-80px)] bg-gray-100"> {/* 80px = navbar height */}
+        <div className="w-full md:w-[250px]">
+          <UserSidebar />
+        </div>
+        <main className="flex-1 p-0 overflow-x-auto">
           <Outlet />
         </main>
       </div>
